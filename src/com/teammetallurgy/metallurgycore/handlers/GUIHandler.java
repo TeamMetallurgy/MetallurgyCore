@@ -34,7 +34,7 @@ public abstract class GUIHandler implements IGuiHandler
         if (tileEntity instanceof TileEntityMetallurgy)
         {
             TileEntityMetallurgy te = (TileEntityMetallurgy) tileEntity;
-            getGui(ID, player, te);
+            return getGui(ID, player, te);
         }
         return null;
     }
