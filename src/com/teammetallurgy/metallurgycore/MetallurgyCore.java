@@ -1,8 +1,9 @@
 package com.teammetallurgy.metallurgycore;
 
+import net.minecraft.creativetab.CreativeTabs;
+
 import com.teammetallurgy.metallurgycore.handlers.PacketHandler;
 
-import net.minecraft.creativetab.CreativeTabs;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.network.NetworkMod;
 
@@ -13,9 +14,9 @@ public class MetallurgyCore
     public static final String MODID = "MetallurgyCore";
     public static final String MODNAME = "Metallurgy Core";
 
-    @Mod.Instance(MODID)
+    @Mod.Instance(MetallurgyCore.MODID)
     public static MetallurgyCore instance;
 
-    public CreativeTabs creativeTabItems = new CreativeTabs(MODID + ".Items");
+    public CreativeTabs creativeTabItems = new CreativeTabs(MetallurgyCore.MODID + ".Items");
 
 }

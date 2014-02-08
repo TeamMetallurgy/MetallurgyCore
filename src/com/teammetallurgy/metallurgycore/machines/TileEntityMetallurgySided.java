@@ -14,10 +14,28 @@ public abstract class TileEntityMetallurgySided extends TileEntityMetallurgy imp
 
     public TileEntityMetallurgySided(int numberOfItemStacks, int[] slotsTop, int[] slotsSide, int[] slotsBottom)
     {
-        itemStacks = new ItemStack[numberOfItemStacks];
-        slots_top = slotsTop;
-        slots_bottom = slotsBottom;
-        slots_sides = slotsSide;
+        this.itemStacks = new ItemStack[numberOfItemStacks];
+        TileEntityMetallurgySided.slots_top = slotsTop;
+        TileEntityMetallurgySided.slots_bottom = slotsBottom;
+        TileEntityMetallurgySided.slots_sides = slotsSide;
+    }
+
+    @Override
+    public boolean canExtractItem(int i, ItemStack itemstack, int j)
+    {
+        return i != 1 || itemstack.itemID == Item.bucketEmpty.itemID;
+    }
+
+    @Override
+    public boolean canInsertItem(int i, ItemStack itemstack, int j)
+    {
+        return this.isItemValidForSlot(i, itemstack);
+    }
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(int side)
+    {
+        return side == 0 ? TileEntityMetallurgySided.slots_bottom : side == 1 ? TileEntityMetallurgySided.slots_top : TileEntityMetallurgySided.slots_sides;
     }
 
     @Override
@@ -30,23 +48,5 @@ public abstract class TileEntityMetallurgySided extends TileEntityMetallurgy imp
     protected void writeCustomNBT(NBTTagCompound compound)
     {
         super.writeCustomNBT(compound);
-    }
-
-    @Override
-    public int[] getAccessibleSlotsFromSide(int side)
-    {
-        return side == 0 ? slots_bottom : (side == 1 ? slots_top : slots_sides);
-    }
-
-    @Override
-    public boolean canInsertItem(int i, ItemStack itemstack, int j)
-    {
-        return this.isItemValidForSlot(i, itemstack);
-    }
-
-    @Override
-    public boolean canExtractItem(int i, ItemStack itemstack, int j)
-    {
-        return i != 1 || itemstack.itemID == Item.bucketEmpty.itemID;
     }
 }

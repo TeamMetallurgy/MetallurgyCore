@@ -10,7 +10,13 @@ import org.lwjgl.opengl.GL11;
 public abstract class GUIMetallurgy extends GuiContainer
 {
 
+    public static void bindTexture(ResourceLocation resourceLocation)
+    {
+        Minecraft.getMinecraft().renderEngine.bindTexture(resourceLocation);
+    }
+
     protected ResourceLocation texture;
+
     protected TileEntityMetallurgy tileEntity;
 
     public GUIMetallurgy(ContainerMetallurgy container, String texture)
@@ -41,17 +47,12 @@ public abstract class GUIMetallurgy extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
-        drawTitle(8, 6);
+        this.drawTitle(8, 6);
     }
 
     protected void drawTitle(int x, int y)
     {
         this.fontRenderer.drawString(I18n.getString(this.tileEntity.getInvName()), x, y, 4210752);
-    }
-
-    public static void bindTexture(ResourceLocation resourceLocation)
-    {
-        Minecraft.getMinecraft().renderEngine.bindTexture(resourceLocation);
     }
 
 }

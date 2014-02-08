@@ -15,23 +15,6 @@ public abstract class BlockMetallurgyCore extends BlockContainer
     }
 
     @Override
-    public abstract CreativeTabs getCreativeTabToDisplayOn();
-
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xOffset, float yOffset, float zOffset)
-    {
-        if (player.isSneaking()) { return false; }
-
-        world.markBlockForUpdate(x, y, z);
-        if (!world.isRemote)
-        {
-            doOnActivate(world, x, y, z, player, side, xOffset, yOffset, zOffset);
-        }
-
-        return true;
-    }
-
-    @Override
     public void breakBlock(World world, int x, int y, int z, int oldID, int oldMeta)
     {
         TileEntityMetallurgy blockTileEntity = (TileEntityMetallurgy) world.getBlockTileEntity(x, y, z);
@@ -56,4 +39,21 @@ public abstract class BlockMetallurgyCore extends BlockContainer
      * @param zOffset
      */
     abstract protected void doOnActivate(World world, int x, int y, int z, EntityPlayer player, int side, float xOffset, float yOffset, float zOffset);
+
+    @Override
+    public abstract CreativeTabs getCreativeTabToDisplayOn();
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xOffset, float yOffset, float zOffset)
+    {
+        if (player.isSneaking()) { return false; }
+
+        world.markBlockForUpdate(x, y, z);
+        if (!world.isRemote)
+        {
+            this.doOnActivate(world, x, y, z, player, side, xOffset, yOffset, zOffset);
+        }
+
+        return true;
+    }
 }

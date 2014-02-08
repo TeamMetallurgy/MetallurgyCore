@@ -14,8 +14,10 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderEntityBlock extends Render {
-    public static class RenderInfo {
+public class RenderEntityBlock extends Render
+{
+    public static class RenderInfo
+    {
 
         public Block baseBlock = Block.sand;
         public int brightness = -1;
@@ -32,7 +34,7 @@ public class RenderEntityBlock extends Render {
 
         public RenderInfo()
         {
-            setRenderAllSides();
+            this.setRenderAllSides();
         }
 
         public RenderInfo(final Block template, final Icon[] texture)
@@ -45,7 +47,7 @@ public class RenderEntityBlock extends Render {
         public RenderInfo(final float minX, final float minY, final float minZ, final float maxX, final float maxY, final float maxZ)
         {
             this();
-            setBounds(minX, minY, minZ, maxX, maxY, maxZ);
+            this.setBounds(minX, minY, minZ, maxX, maxY, maxZ);
         }
 
         public float getBlockBrightness(final IBlockAccess iblockaccess, final int i, final int j, final int k)
@@ -126,7 +128,7 @@ public class RenderEntityBlock extends Render {
     @Override
     public void doRender(final Entity entity, final double i, final double j, final double k, final float f, final float f1)
     {
-        doRenderBlock((EntityBlock) entity, i, j, k);
+        this.doRenderBlock((EntityBlock) entity, i, j, k);
     }
 
     public void doRenderBlock(final EntityBlock entity, final double i, final double j, final double k)
@@ -137,7 +139,7 @@ public class RenderEntityBlock extends Render {
         final World world = entity.worldObj;
         final RenderInfo util = new RenderInfo();
         util.texture = entity.texture;
-        bindTexture(TextureMap.locationBlocksTexture);
+        this.bindTexture(TextureMap.locationBlocksTexture);
 
         for (int iBase = 0; iBase < entity.iSize; ++iBase)
         {
@@ -187,7 +189,8 @@ public class RenderEntityBlock extends Render {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void renderBlock(final RenderInfo info, final IBlockAccess blockAccess, final double x, final double y, final double z, final int lightX, final int lightY, final int lightZ, boolean doLight, final boolean doTessellating)
+    public void renderBlock(final RenderInfo info, final IBlockAccess blockAccess, final double x, final double y, final double z, final int lightX, final int lightY, final int lightZ,
+            boolean doLight, final boolean doTessellating)
     {
         final float lightBottom = 0.5F;
         final float lightTop = 1.0F;

@@ -35,6 +35,28 @@ public abstract class ContainerMetallurgy extends Container
         crafter.sendProgressBarUpdate(this, 2, this.tileEntity.currentItemBurnTime);
     }
 
+    protected void addPlayersInventoryToContainer(InventoryPlayer inventoryPlayer, int xStart, int yStart)
+    {
+        for (int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 9; ++j)
+            {
+                this.addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, xStart + j * 18, yStart + i * 18));
+            }
+        }
+
+        for (int i = 0; i < 9; ++i)
+        {
+            this.addSlotToContainer(new Slot(inventoryPlayer, i, xStart + i * 18, 142));
+        }
+    }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer entityplayer)
+    {
+        return this.tileEntity.isUseableByPlayer(entityplayer);
+    }
+
     @Override
     public void detectAndSendChanges()
     {
@@ -66,47 +88,6 @@ public abstract class ContainerMetallurgy extends Container
     }
 
     @Override
-    public void updateProgressBar(int id, int newValue)
-    {
-        if (id == 0)
-        {
-            this.tileEntity.cookTime = newValue;
-        }
-
-        if (id == 1)
-        {
-            this.tileEntity.burnTime = newValue;
-        }
-
-        if (id == 2)
-        {
-            this.tileEntity.currentItemBurnTime = newValue;
-        }
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer entityplayer)
-    {
-        return this.tileEntity.isUseableByPlayer(entityplayer);
-    }
-
-    protected void addPlayersInventoryToContainer(InventoryPlayer inventoryPlayer, int xStart, int yStart)
-    {
-        for (int i = 0; i < 3; ++i)
-        {
-            for (int j = 0; j < 9; ++j)
-            {
-                this.addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, xStart + j * 18, yStart + i * 18));
-            }
-        }
-
-        for (int i = 0; i < 9; ++i)
-        {
-            this.addSlotToContainer(new Slot(inventoryPlayer, i, xStart + i * 18, 142));
-        }
-    }
-
-    @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
     {
         ItemStack itemstack = null;
@@ -123,9 +104,9 @@ public abstract class ContainerMetallurgy extends Container
                 {
                     if (!this.mergeItemStack(itemstack1, this.machineFuelID, this.machineFuelID + 1, false)) { return null; }
                 }
-                else if (!mergeItemStack(itemstack1, 0, this.machineInventoryEndID, false)) { return null; }
+                else if (!this.mergeItemStack(itemstack1, 0, this.machineInventoryEndID, false)) { return null; }
             }
-            else if (!mergeItemStack(itemstack1, this.machineInventoryEndID + 1, this.inventorySlots.size(), false)) { return null; }
+            else if (!this.mergeItemStack(itemstack1, this.machineInventoryEndID + 1, this.inventorySlots.size(), false)) { return null; }
 
             if (itemstack1.stackSize == 0)
             {
@@ -142,6 +123,25 @@ public abstract class ContainerMetallurgy extends Container
         }
 
         return itemstack;
+    }
+
+    @Override
+    public void updateProgressBar(int id, int newValue)
+    {
+        if (id == 0)
+        {
+            this.tileEntity.cookTime = newValue;
+        }
+
+        if (id == 1)
+        {
+            this.tileEntity.burnTime = newValue;
+        }
+
+        if (id == 2)
+        {
+            this.tileEntity.currentItemBurnTime = newValue;
+        }
     }
 
 }

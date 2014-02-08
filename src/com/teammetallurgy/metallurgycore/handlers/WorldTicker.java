@@ -16,9 +16,9 @@ public abstract class WorldTicker implements ITickHandler
     private long timeThisTick = 0L;
 
     @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData)
+    public String getLabel()
     {
-
+        return "MetallurgyWorld";
     }
 
     @Override
@@ -29,13 +29,13 @@ public abstract class WorldTicker implements ITickHandler
         this.timeThisTick = System.currentTimeMillis();
 
         int count = 0;
-        ArrayList<ChunkLoc> chunks = chunksToGenerate.get(Integer.valueOf(dim));
-        if ((chunks != null) && (chunks.size() > 0))
+        ArrayList<ChunkLoc> chunks = WorldTicker.chunksToGenerate.get(Integer.valueOf(dim));
+        if (chunks != null && chunks.size() > 0)
         {
             for (int a = 0; a < 10; a++)
             {
-                chunks = chunksToGenerate.get(Integer.valueOf(dim));
-                if ((chunks == null) || (chunks.size() <= 0))
+                chunks = WorldTicker.chunksToGenerate.get(Integer.valueOf(dim));
+                if (chunks == null || chunks.size() <= 0)
                 {
                     break;
                 }
@@ -46,9 +46,9 @@ public abstract class WorldTicker implements ITickHandler
                 long xSeed = fmlRandom.nextLong() >> 3;
                 long zSeed = fmlRandom.nextLong() >> 3;
                 fmlRandom.setSeed(xSeed * loc.chunkXPos + zSeed * loc.chunkZPos ^ worldSeed);
-                worldGenerator(world, loc, fmlRandom);
+                this.worldGenerator(world, loc, fmlRandom);
                 chunks.remove(0);
-                chunksToGenerate.put(Integer.valueOf(dim), chunks);
+                WorldTicker.chunksToGenerate.put(Integer.valueOf(dim), chunks);
             }
 
             if (count > 0)
@@ -58,8 +58,6 @@ public abstract class WorldTicker implements ITickHandler
         }
     }
 
-    public abstract void worldGenerator(WorldServer world, ChunkLoc loc, Random fmlRandom);
-
     @Override
     public EnumSet<TickType> ticks()
     {
@@ -67,9 +65,11 @@ public abstract class WorldTicker implements ITickHandler
     }
 
     @Override
-    public String getLabel()
+    public void tickStart(EnumSet<TickType> type, Object... tickData)
     {
-        return "MetallurgyWorld";
+
     }
+
+    public abstract void worldGenerator(WorldServer world, ChunkLoc loc, Random fmlRandom);
 
 }

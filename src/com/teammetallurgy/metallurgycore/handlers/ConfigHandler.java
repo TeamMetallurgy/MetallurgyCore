@@ -9,103 +9,113 @@ public class ConfigHandler
 
     private static Configuration configuration;
 
-    public static void setFile(File file)
+    public static boolean generates(String name)
     {
-        configuration = new Configuration(file);
+        boolean b = ConfigHandler.configuration.get("Generators", name, true).getBoolean(true);
 
-        configuration.load();
+        ConfigHandler.saveChanges();
 
-        saveChanges();
-    }
-
-    private static void saveChanges()
-    {
-
-        if (configuration.hasChanged())
-        {
-            configuration.save();
-        }
+        return b;
     }
 
     public static int getBlock(String blockName, int defaultid)
     {
-        int id = configuration.getBlock(blockName, defaultid).getInt();
+        int id = ConfigHandler.configuration.getBlock(blockName, defaultid).getInt();
 
-        saveChanges();
+        ConfigHandler.saveChanges();
 
         return id;
     }
 
     public static int getBlock(String category, String blockName, int defaultid)
     {
-        int id = configuration.getBlock(category, blockName, defaultid).getInt();
+        int id = ConfigHandler.configuration.getBlock(category, blockName, defaultid).getInt();
 
-        saveChanges();
-
-        return id;
-    }
-
-    public static int getItem(String itemName, int defaultid)
-    {
-        int id = configuration.getItem(itemName, defaultid).getInt();
-
-        saveChanges();
+        ConfigHandler.saveChanges();
 
         return id;
-    }
-
-    public static boolean generates(String name)
-    {
-        boolean b = configuration.get("Generators", name, true).getBoolean(true);
-
-        saveChanges();
-
-        return b;
-    }
-
-    public static boolean setEnabled(String setName)
-    {
-        boolean b = configuration.get("Sets", setName, true).getBoolean(true);
-
-        saveChanges();
-
-        return b;
-    }
-
-    private static String getName(String categories, String key, String defaultValue)
-    {
-        String string = configuration.get(categories, key, defaultValue).toString();
-
-        saveChanges();
-
-        return string;
     }
 
     private static boolean getBoolean(String categories, String key, boolean defaultValue)
     {
-        boolean b = configuration.get(categories, key, defaultValue).getBoolean(defaultValue);
+        boolean b = ConfigHandler.configuration.get(categories, key, defaultValue).getBoolean(defaultValue);
 
-        saveChanges();
+        ConfigHandler.saveChanges();
 
+        return b;
+    }
+
+    public static int getItem(String itemName, int defaultid)
+    {
+        int id = ConfigHandler.configuration.getItem(itemName, defaultid).getInt();
+
+        ConfigHandler.saveChanges();
+
+        return id;
+    }
+
+    public static int getItem(String category, String itemName, Integer defaultid)
+    {
+
+        int id = ConfigHandler.configuration.getItem(category, itemName, defaultid).getInt();
+
+        ConfigHandler.saveChanges();
+
+        return id;
+    }
+
+    private static String getName(String categories, String key, String defaultValue)
+    {
+        String string = ConfigHandler.configuration.get(categories, key, defaultValue).toString();
+
+        ConfigHandler.saveChanges();
+
+        return string;
+    }
+
+    public static boolean itemEnabled(String itemName)
+    {
+        boolean b = ConfigHandler.configuration.get(Configuration.CATEGORY_ITEM, itemName, true).getBoolean(true);
+
+        ConfigHandler.saveChanges();
         return b;
     }
 
     public static boolean regen()
     {
-        return getBoolean("World_Regen", "regenOres", false);
+        return ConfigHandler.getBoolean("World_Regen", "regenOres", false);
     }
 
     public static String regenKey()
     {
-        return getName("World_Regen", "regen_key", "DEFAULT");
+        return ConfigHandler.getName("World_Regen", "regen_key", "DEFAULT");
     }
 
-    public static boolean itemEnabled(String itemName)
+    private static void saveChanges()
     {
-        boolean b = configuration.get(Configuration.CATEGORY_ITEM, itemName, true).getBoolean(true);
 
-        saveChanges();
+        if (ConfigHandler.configuration.hasChanged())
+        {
+            ConfigHandler.configuration.save();
+        }
+    }
+
+    public static boolean setEnabled(String setName)
+    {
+        boolean b = ConfigHandler.configuration.get("Sets", setName, true).getBoolean(true);
+
+        ConfigHandler.saveChanges();
+
         return b;
+    }
+
+    public static void setFile(File file)
+    {
+        ConfigHandler.configuration = new Configuration(file);
+
+        ConfigHandler.configuration.load();
+
+        ConfigHandler.saveChanges();
     }
 
 }

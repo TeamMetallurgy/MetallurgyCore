@@ -7,17 +7,17 @@ public class LogHandler
 
     private static Logger log;
 
-    public static void setLog(Logger logger)
-    {
-        log = logger;
-    }
-
     public static void log(String message)
     {
-        if (log != null)
+        if (LogHandler.log != null)
         {
-            log.warning(message);
+            LogHandler.log.warning(message);
         }
+    }
+
+    public static void setLog(Logger logger)
+    {
+        LogHandler.log = logger;
     }
 
 }

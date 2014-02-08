@@ -10,7 +10,13 @@ import com.teammetallurgy.metallurgycore.machines.GUIMetallurgy;
 
 public class FluidWidget
 {
+    public static void bindTexture(final ResourceLocation texture)
+    {
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+    }
+
     private final FluidTank tank;
+
     private final int x, y, u, v, w, h;
 
     public FluidWidget(final FluidTank tank, final int x, final int y, final int u, final int v, final int w, final int h)
@@ -51,11 +57,6 @@ public class FluidWidget
         gui.drawTexturedModalRect(guiX + this.x, guiY + this.y - 1, this.x, this.y - 1, this.w, this.h - (int) Math.floor(this.h * scale) + 1);
         gui.drawTexturedModalRect(guiX + this.x, guiY + this.y, this.u, this.v, this.w, this.h);
 
-    }
-
-    public static void bindTexture(final ResourceLocation texture)
-    {
-        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
     }
 
 }

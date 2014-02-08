@@ -9,8 +9,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.teammetallurgy.metallurgycore.MetallurgyCore;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,89 +18,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.oredict.OreDictionary;
+
+import com.teammetallurgy.metallurgycore.MetallurgyCore;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemOreFinder extends Item
 {
-    private ExecutorService exec = Executors.newCachedThreadPool();
-
-    public ItemOreFinder(int id)
-    {
-        super(id);
-        setMaxDamage(64);
-        this.maxStackSize = 1;
-        this.setCreativeTab(MetallurgyCore.instance.creativeTabItems);
-    }
-
-    @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float xOffset, float yOffset, float zOffset)
-    {
-        int mode = 0;
-        if (stack.hasTagCompound())
-        {
-            mode = stack.getTagCompound().getInteger("mode");
-        }
-        else
-        {
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setInteger("mode", mode);
-        }
-
-        if (player.isSneaking())
-        {
-            mode++;
-            mode %= 6;
-
-            stack.getTagCompound().setInteger("mode", mode);
-
-            if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            {
-                player.addChatMessage("Radius: " + mode + " chunk" + (mode != 1 ? "s" : ""));
-            }
-            return false;
-        }
-
-        if (world.isRemote) { return false; }
-
-        Chunk chunkFromBlockCoords = world.getChunkFromBlockCoords(x, z);
-
-        Chunk minChunk = world.getChunkFromChunkCoords(chunkFromBlockCoords.xPosition - mode, chunkFromBlockCoords.zPosition - mode);
-        Chunk maxChunk = world.getChunkFromChunkCoords(chunkFromBlockCoords.xPosition + mode, chunkFromBlockCoords.zPosition + mode);
-
-        int minX = minChunk.xPosition << 4;
-        int maxX = maxChunk.xPosition << 4;
-
-        int minZ = minChunk.zPosition << 4;
-        int maxZ = maxChunk.zPosition << 4;
-
-        int minY = 0;
-        int maxY = 128;
-
-        try
-        {
-            if (mode == 0)
-            {
-                maxX += 16;
-                maxZ += 16;
-            }
-
-            getOresInArea(world, player, minX, minY, minZ, maxX, maxY, maxZ);
-
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
-        catch (ExecutionException e)
-        {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
     public class OreGeneratorm implements Callable<Map<String, Integer>>
     {
         private final World world;
@@ -194,10 +118,87 @@ public class ItemOreFinder extends Item
 
     }
 
+    private ExecutorService exec = Executors.newCachedThreadPool();
+
+    public ItemOreFinder(int id)
+    {
+        super(id);
+        this.setMaxDamage(64);
+        this.maxStackSize = 1;
+        this.setCreativeTab(MetallurgyCore.instance.creativeTabItems);
+    }
+
     public synchronized void getOresInArea(World world, EntityPlayer player, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) throws InterruptedException, ExecutionException
     {
         OreGeneratorm ore = new OreGeneratorm(world, player, minX, minY, minZ, maxX, maxY, maxZ);
         this.exec.submit(ore);
+    }
+
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float xOffset, float yOffset, float zOffset)
+    {
+        int mode = 0;
+        if (stack.hasTagCompound())
+        {
+            mode = stack.getTagCompound().getInteger("mode");
+        }
+        else
+        {
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setInteger("mode", mode);
+        }
+
+        if (player.isSneaking())
+        {
+            mode++;
+            mode %= 6;
+
+            stack.getTagCompound().setInteger("mode", mode);
+
+            if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+            {
+                player.addChatMessage("Radius: " + mode + " chunk" + (mode != 1 ? "s" : ""));
+            }
+            return false;
+        }
+
+        if (world.isRemote) { return false; }
+
+        Chunk chunkFromBlockCoords = world.getChunkFromBlockCoords(x, z);
+
+        Chunk minChunk = world.getChunkFromChunkCoords(chunkFromBlockCoords.xPosition - mode, chunkFromBlockCoords.zPosition - mode);
+        Chunk maxChunk = world.getChunkFromChunkCoords(chunkFromBlockCoords.xPosition + mode, chunkFromBlockCoords.zPosition + mode);
+
+        int minX = minChunk.xPosition << 4;
+        int maxX = maxChunk.xPosition << 4;
+
+        int minZ = minChunk.zPosition << 4;
+        int maxZ = maxChunk.zPosition << 4;
+
+        int minY = 0;
+        int maxY = 128;
+
+        try
+        {
+            if (mode == 0)
+            {
+                maxX += 16;
+                maxZ += 16;
+            }
+
+            this.getOresInArea(world, player, minX, minY, minZ, maxX, maxY, maxZ);
+
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     @Override

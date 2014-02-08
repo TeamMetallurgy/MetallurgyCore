@@ -19,7 +19,7 @@ public class SlotMetallurgy extends Slot
     @Override
     public boolean isItemValid(ItemStack stack)
     {
-        return container.isItemValidForSlot(id, stack);
+        return this.container.isItemValidForSlot(this.id, stack);
     }
 
 }

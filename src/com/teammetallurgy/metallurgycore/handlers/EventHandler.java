@@ -11,21 +11,13 @@ public abstract class EventHandler
 {
 
     @ForgeSubscribe
-    public void chunkSave(ChunkDataEvent.Save event)
-    {
-        NBTTagCompound tagCompound = new NBTTagCompound();
-        event.getData().setTag(getModTag(), tagCompound);
-        tagCompound.setBoolean(ConfigHandler.regenKey(), true);
-    }
-
-    @ForgeSubscribe
     public void chunkLoad(ChunkDataEvent.Load event)
     {
         int dim = event.world.provider.dimensionId;
 
         ChunkCoordIntPair loc = event.getChunk().getChunkCoordIntPair();
 
-        if ((!event.getData().getCompoundTag(getModTag()).hasKey(ConfigHandler.regenKey()) && ConfigHandler.regen()))
+        if (!event.getData().getCompoundTag(this.getModTag()).hasKey(ConfigHandler.regenKey()) && ConfigHandler.regen())
         {
             LogHandler.log("Worlg gen was never run for chunk at " + loc);
 
@@ -43,6 +35,14 @@ public abstract class EventHandler
                 WorldTicker.chunksToGenerate.put(dim, chunks);
             }
         }
+    }
+
+    @ForgeSubscribe
+    public void chunkSave(ChunkDataEvent.Save event)
+    {
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        event.getData().setTag(this.getModTag(), tagCompound);
+        tagCompound.setBoolean(ConfigHandler.regenKey(), true);
     }
 
     public abstract String getModTag();

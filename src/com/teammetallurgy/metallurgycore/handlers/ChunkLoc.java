@@ -6,6 +6,10 @@ import net.minecraft.world.ChunkCoordIntPair;
 
 public class ChunkLoc implements Serializable
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8676722129630635224L;
     public final int chunkXPos;
     public final int chunkZPos;
 
@@ -15,14 +19,14 @@ public class ChunkLoc implements Serializable
         this.chunkZPos = z;
     }
 
-    public boolean equals(ChunkLoc obj)
-    {
-        return (obj.chunkXPos == this.chunkXPos) && (obj.chunkZPos == this.chunkZPos);
-    }
-
     public boolean equals(ChunkCoordIntPair pair)
     {
-        return (pair.chunkXPos == this.chunkXPos) && (pair.chunkZPos == this.chunkZPos);
+        return pair.chunkXPos == this.chunkXPos && pair.chunkZPos == this.chunkZPos;
+    }
+
+    public boolean equals(ChunkLoc obj)
+    {
+        return obj.chunkXPos == this.chunkXPos && obj.chunkZPos == this.chunkZPos;
     }
 
     public int getCenterXPos()

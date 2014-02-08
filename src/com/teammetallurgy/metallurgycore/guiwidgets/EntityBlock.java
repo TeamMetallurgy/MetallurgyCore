@@ -7,7 +7,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EntityBlock extends Entity {
+public class EntityBlock extends Entity
+{
 
     private int brightness = -1;
     public double iSize, jSize, kSize;
@@ -29,7 +30,7 @@ public class EntityBlock extends Entity {
     public EntityBlock(final World world, final double xPos, final double yPos, final double zPos)
     {
         super(world);
-        setPositionAndRotation(xPos, yPos, zPos, 0, 0);
+        this.setPositionAndRotation(xPos, yPos, zPos, 0, 0);
     }
 
     public EntityBlock(final World world, final double i, final double j, final double k, final double iSize, final double jSize, final double kSize)
@@ -38,7 +39,7 @@ public class EntityBlock extends Entity {
         this.iSize = iSize;
         this.jSize = jSize;
         this.kSize = kSize;
-        setPositionAndRotation(i, j, k, 0, 0);
+        this.setPositionAndRotation(i, j, k, 0, 0);
         this.motionX = 0.0;
         this.motionY = 0.0;
         this.motionZ = 0.0;
@@ -58,7 +59,7 @@ public class EntityBlock extends Entity {
     @Override
     public void moveEntity(final double d, final double d1, final double d2)
     {
-        setPosition(this.posX + d, this.posY + d1, this.posZ + d2);
+        this.setPosition(this.posX + d, this.posY + d1, this.posZ + d2);
     }
 
     @Override
