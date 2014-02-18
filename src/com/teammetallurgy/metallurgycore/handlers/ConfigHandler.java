@@ -51,7 +51,7 @@ public class ConfigHandler
 
         ConfigHandler.saveChanges();
 
-        return id;
+        return id - 256;
     }
 
     public static int getItem(String category, String itemName, Integer defaultid)
