@@ -7,6 +7,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.teammetallurgy.metallurgycore.machines.GUIMetallurgy;
+import com.teammetallurgy.metallurgycore.machines.GUIMetallurgyMachine;
 
 public class FluidWidget
 {
@@ -42,7 +43,7 @@ public class FluidWidget
 
         final float scale = Math.min(fluidStack.amount, this.tank.getCapacity()) / (float) this.tank.getCapacity();
 
-        GUIMetallurgy.bindTexture(FluidRender.getFluidSheet(fluidStack));
+        GUIMetallurgyMachine.bindTexture(FluidRender.getFluidSheet(fluidStack));
 
         for (int col = 0; col < this.w / 16; col++)
         {
@@ -52,7 +53,7 @@ public class FluidWidget
             }
         }
 
-        GUIMetallurgy.bindTexture(texture);
+        GUIMetallurgyMachine.bindTexture(texture);
 
         gui.drawTexturedModalRect(guiX + this.x, guiY + this.y - 1, this.x, this.y - 1, this.w, this.h - (int) Math.floor(this.h * scale) + 1);
         gui.drawTexturedModalRect(guiX + this.x, guiY + this.y, this.u, this.v, this.w, this.h);

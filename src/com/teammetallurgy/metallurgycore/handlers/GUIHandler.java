@@ -19,14 +19,14 @@ public abstract class GUIHandler implements IGuiHandler
         if (tileEntity instanceof TileEntityMetallurgy)
         {
             TileEntityMetallurgy te = (TileEntityMetallurgy) tileEntity;
-            return this.getGui(ID, player, te);
+            return this.getTEGui(ID, player, te);
         }
         return null;
     }
 
-    public abstract Object getContainer(int ID, EntityPlayer player, TileEntityMetallurgy te);
+    public abstract Object getTEContainer(int ID, EntityPlayer player, TileEntityMetallurgy te);
 
-    public abstract Object getGui(int ID, EntityPlayer player, TileEntityMetallurgy te);
+    public abstract Object getTEGui(int ID, EntityPlayer player, TileEntityMetallurgy te);
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
@@ -36,7 +36,7 @@ public abstract class GUIHandler implements IGuiHandler
         if (tileEntity instanceof TileEntityMetallurgy)
         {
             TileEntityMetallurgy te = (TileEntityMetallurgy) tileEntity;
-            return this.getContainer(ID, player, te);
+            return this.getTEContainer(ID, player, te);
         }
         return null;
     }

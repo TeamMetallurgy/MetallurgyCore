@@ -3,13 +3,13 @@ package com.teammetallurgy.metallurgycore.machines;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotMetallurgy extends Slot
+public class SlotMetallurgyMachine extends Slot
 {
 
     private int id;
     private TileEntityMetallurgy container;
 
-    public SlotMetallurgy(TileEntityMetallurgy inventory, int id, int x, int y)
+    public SlotMetallurgyMachine(TileEntityMetallurgy inventory, int id, int x, int y)
     {
         super(inventory, id, x, y);
         this.id = id;

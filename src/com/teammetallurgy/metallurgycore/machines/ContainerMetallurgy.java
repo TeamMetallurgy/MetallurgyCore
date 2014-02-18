@@ -3,37 +3,14 @@ package com.teammetallurgy.metallurgycore.machines;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 public abstract class ContainerMetallurgy extends Container
 {
-
-    public TileEntityMetallurgy tileEntity;
-    private int lastCookTime;
-    private int lastBurnTime;
-    private int lastItemBurnTime;
-
-    protected int machineFuelID;
-    protected int machineInventoryEndID;
-
-    public ContainerMetallurgy(int machineFuelID, int machineInventoryEndID, TileEntityMetallurgy tileEntityMetallurgy)
-    {
-        this.machineFuelID = machineFuelID;
-        this.machineInventoryEndID = machineInventoryEndID;
-        this.tileEntity = tileEntityMetallurgy;
-    }
-
-    @Override
-    public void addCraftingToCrafters(ICrafting crafter)
-    {
-        super.addCraftingToCrafters(crafter);
-        crafter.sendProgressBarUpdate(this, 0, this.tileEntity.cookTime);
-        crafter.sendProgressBarUpdate(this, 1, this.tileEntity.burnTime);
-        crafter.sendProgressBarUpdate(this, 2, this.tileEntity.currentItemBurnTime);
-    }
 
     protected void addPlayersInventoryToContainer(InventoryPlayer inventoryPlayer, int xStart, int yStart)
     {
@@ -47,101 +24,64 @@ public abstract class ContainerMetallurgy extends Container
 
         for (int i = 0; i < 9; ++i)
         {
-            this.addSlotToContainer(new Slot(inventoryPlayer, i, xStart + i * 18, 142));
+            this.addSlotToContainer(getSlot(inventoryPlayer, xStart + i * 18, yStart + 58, i));
         }
     }
 
-    @Override
-    public boolean canInteractWith(EntityPlayer entityplayer)
+    protected Slot getSlot(InventoryPlayer inventoryPlayer, int x, int y, int id)
     {
-        return this.tileEntity.isUseableByPlayer(entityplayer);
+        return new Slot(inventoryPlayer, id, x, y);
+    }
+
+    protected void readInventory(NBTTagCompound tagCompound, IInventory inventory)
+    {
+        if (tagCompound == null) { return; }
+
+        NBTTagList nbttaglist = tagCompound.getTagList("items");
+
+        for (int i = 0; i < nbttaglist.tagCount(); ++i)
+        {
+            NBTTagCompound nbttagcompound1 = (NBTTagCompound) nbttaglist.tagAt(i);
+            byte b0 = nbttagcompound1.getByte("Slot");
+
+            if (b0 >= 0 && b0 < inventory.getSizeInventory())
+            {
+                inventory.setInventorySlotContents(b0, ItemStack.loadItemStackFromNBT(nbttagcompound1));
+            }
+        }
+    }
+
+    protected void saveInventoryToStack(ItemStack stack, IInventory inventory)
+    {
+        NBTTagCompound compound = stack.getTagCompound();
+
+        if (compound == null)
+        {
+            compound = new NBTTagCompound();
+        }
+
+        NBTTagList nbttaglist = new NBTTagList();
+
+        for (int i = 0; i < inventory.getSizeInventory(); ++i)
+        {
+            if (inventory.getStackInSlot(i) != null)
+            {
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                tagCompound.setByte("Slot", (byte) i);
+                inventory.getStackInSlot(i).writeToNBT(tagCompound);
+                nbttaglist.appendTag(tagCompound);
+            }
+        }
+
+        compound.setTag("items", nbttaglist);
+
+        stack.setTagCompound(compound);
     }
 
     @Override
-    public void detectAndSendChanges()
+    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
     {
-        super.detectAndSendChanges();
-
-        for (int i = 0; i < this.crafters.size(); ++i)
-        {
-            ICrafting icrafting = (ICrafting) this.crafters.get(i);
-
-            if (this.lastCookTime != this.tileEntity.cookTime)
-            {
-                icrafting.sendProgressBarUpdate(this, 0, this.tileEntity.cookTime);
-            }
-
-            if (this.lastBurnTime != this.tileEntity.burnTime)
-            {
-                icrafting.sendProgressBarUpdate(this, 1, this.tileEntity.burnTime);
-            }
-
-            if (this.lastItemBurnTime != this.tileEntity.currentItemBurnTime)
-            {
-                icrafting.sendProgressBarUpdate(this, 2, this.tileEntity.currentItemBurnTime);
-            }
-        }
-
-        this.lastCookTime = this.tileEntity.cookTime;
-        this.lastBurnTime = this.tileEntity.burnTime;
-        this.lastItemBurnTime = this.tileEntity.currentItemBurnTime;
-    }
-
-    @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
-    {
-        ItemStack itemstack = null;
-        Slot slot = (Slot) this.inventorySlots.get(slotID);
-
-        if (slot != null && slot.getHasStack())
-        {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
-
-            if (slotID > this.machineInventoryEndID)
-            {
-                if (TileEntityFurnace.isItemFuel(itemstack1) && this.machineFuelID > 0)
-                {
-                    if (!this.mergeItemStack(itemstack1, this.machineFuelID, this.machineFuelID + 1, false)) { return null; }
-                }
-                else if (!this.mergeItemStack(itemstack1, 0, this.machineInventoryEndID, false)) { return null; }
-            }
-            else if (!this.mergeItemStack(itemstack1, this.machineInventoryEndID + 1, this.inventorySlots.size(), false)) { return null; }
-
-            if (itemstack1.stackSize == 0)
-            {
-                slot.putStack((ItemStack) null);
-            }
-            else
-            {
-                slot.onSlotChanged();
-            }
-
-            if (itemstack1.stackSize == itemstack.stackSize) { return null; }
-
-            slot.onPickupFromSlot(player, itemstack1);
-        }
-
-        return itemstack;
-    }
-
-    @Override
-    public void updateProgressBar(int id, int newValue)
-    {
-        if (id == 0)
-        {
-            this.tileEntity.cookTime = newValue;
-        }
-
-        if (id == 1)
-        {
-            this.tileEntity.burnTime = newValue;
-        }
-
-        if (id == 2)
-        {
-            this.tileEntity.currentItemBurnTime = newValue;
-        }
+        return null;
     }
 
 }
