@@ -1,5 +1,6 @@
 package com.teammetallurgy.metallurgycore.machines;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import net.minecraft.entity.item.EntityItem;
@@ -15,6 +16,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
 
+import com.google.common.collect.Lists;
+
 public abstract class TileEntityMetallurgy extends TileEntity implements IInventory
 {
 
@@ -27,11 +30,11 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
 
     private Random random = new Random();
 
-    protected boolean canAcceptStackRange(int start, int end, ItemStack itemstack)
+    protected boolean canAcceptStackRange(int[] range, ItemStack itemstack)
     {
         Boolean retVal = false;
 
-        for (int i = start; i <= end; i++)
+        for (int i : range)
         {
             boolean itemEqual = this.itemStacks[i].isItemEqual(itemstack);
 
@@ -49,8 +52,6 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
 
         return retVal;
     }
-
-    protected abstract boolean canProcessItem();
 
     @Override
     public void closeChest()
@@ -196,13 +197,15 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     }
 
     @Override
-    public abstract boolean isItemValidForSlot(int i, ItemStack itemstack);
+    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    {
+        return i >= getOutputSlots()[0] ? false : i == getFuelSlot() ? TileEntityFurnace.isItemFuel(itemstack) : true;
+    }
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer entityplayer)
     {
-        return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false
-                : entityplayer.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
+        return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : entityplayer.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -216,8 +219,6 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     public void openChest()
     {
     }
-
-    protected abstract void processItem();
 
     protected void readCustomNBT(NBTTagCompound data)
     {
@@ -264,10 +265,11 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         }
     }
 
-    protected boolean slotsAreEmtpty(int start, int end)
+    protected boolean slotsAreEmpty(int[] range)
     {
         Boolean retVal = false;
-        for (int i = start; i <= end; i++)
+
+        for (int i : range)
         {
             retVal |= this.itemStacks[i] == null;
         }
@@ -290,19 +292,20 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         {
             if (this.burnTime == 0 && this.canProcessItem())
             {
-                this.currentItemBurnTime = this.burnTime = TileEntityFurnace.getItemBurnTime(this.itemStacks[1]);
+                ItemStack fuelItemStack = getStackInSlot(getFuelSlot());
+                this.currentItemBurnTime = this.burnTime = TileEntityFurnace.getItemBurnTime(fuelItemStack);
 
                 if (this.burnTime > 0)
                 {
                     changed = true;
 
-                    if (this.itemStacks[1] != null)
+                    if (fuelItemStack != null)
                     {
-                        --this.itemStacks[1].stackSize;
+                        --fuelItemStack.stackSize;
 
-                        if (this.itemStacks[1].stackSize == 0)
+                        if (fuelItemStack.stackSize == 0)
                         {
-                            this.itemStacks[1] = this.itemStacks[1].getItem().getContainerItemStack(this.itemStacks[1]);
+                            setInventorySlotContents(getFuelSlot(), fuelItemStack.getItem().getContainerItemStack(fuelItemStack));
                         }
                     }
                 }
@@ -367,5 +370,123 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     {
         super.writeToNBT(compound);
         this.writeCustomNBT(compound);
+    }
+
+    protected abstract int[] getInputSlots();
+
+    protected abstract int[] getOutputSlots();
+
+    protected boolean useMaterialInSlots(int[] slots)
+    {
+        boolean flag = false;
+        for (int slot : slots)
+        {
+            ItemStack stack = getStackInSlot(slot);
+            if (stack != null)
+            {
+                --stack.stackSize;
+
+                if (stack.stackSize <= 0)
+                {
+                    setInventorySlotContents(slot, null);
+                }
+                flag |= true;
+            }
+            else
+            {
+                continue;
+            }
+        }
+        return flag;
+    }
+
+    protected void outputItem(ItemStack itemstack)
+    {
+        for (int slot : getOutputSlots())
+        {
+            ItemStack stackInSlot = getStackInSlot(slot);
+            if (stackInSlot == null)
+            {
+                setInventorySlotContents(slot, itemstack.copy());
+                return;
+            }
+            else if (stackInSlot.isItemEqual(itemstack))
+            {
+                stackInSlot.stackSize += itemstack.stackSize;
+                return;
+            }
+        }
+    }
+
+    protected abstract int getFuelSlot();
+
+    protected ItemStack[] getStacksInSlots(int[] inputSlots)
+    {
+        ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+
+        for (int slot : inputSlots)
+        {
+            stacks.add(getStackInSlot(slot));
+        }
+        return stacks.toArray(new ItemStack[] {});
+    }
+
+    protected ItemStack getSmeltingResultFromSlots(int[] slots)
+    {
+        ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+        for (int slot : slots)
+        {
+            stacks.add(getStackInSlot(slot));
+        }
+
+        return getSmeltingResult(stacks.toArray(new ItemStack[] {}));
+    }
+
+    protected void processItem()
+    {
+        if (this.canProcessItem())
+        {
+            ItemStack[] inputStack = getStacksInSlots(getInputSlots());
+            ItemStack outputStack = getSmeltingResult(inputStack);
+
+            outputItem(outputStack);
+            useMaterialInSlots(getInputSlots());
+        }
+    }
+
+    protected boolean hasMaterialAndRoom(ItemStack... itemStacks)
+    {
+        ItemStack itemstack = getSmeltingResultFromSlots(getInputSlots());
+
+        if (itemStacks.length != 0)
+        {
+            itemstack = getSmeltingResult(itemStacks);
+        }
+
+        if (itemstack == null) { return false; }
+        if (slotsAreEmpty(getOutputSlots())) { return true; }
+        return canAcceptStackRange(getOutputSlots(), itemstack);
+    }
+
+    protected boolean canProcessItem()
+    {
+        if (!hasInput())
+        {
+            return false;
+        }
+        else
+        {
+            return hasMaterialAndRoom();
+        }
+    }
+
+    protected boolean hasInput()
+    {
+        for (int slot : getInputSlots())
+        {
+            if (getStackInSlot(slot) == null) { return false; }
+        }
+
+        return true;
     }
 }
