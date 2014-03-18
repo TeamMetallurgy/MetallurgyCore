@@ -7,3 +7,5 @@
 /build
 /download
 *.iml
+
+/eclipse
