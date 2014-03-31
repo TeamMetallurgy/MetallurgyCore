@@ -1,5 +1,7 @@
 package com.teammetallurgy.metallurgycore;
 
+import com.teammetallurgy.metallurgycore.handlers.ConfigHandler;
+
 import net.minecraft.creativetab.CreativeTabs;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -20,6 +22,7 @@ public class MetallurgyCore
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+    	ConfigHandler.setFile(event.getSuggestedConfigurationFile());
         ItemList.init();
     }
 }
