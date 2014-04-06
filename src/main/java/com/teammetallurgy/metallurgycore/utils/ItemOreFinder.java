@@ -213,7 +213,7 @@ public class ItemOreFinder extends Item
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister par1IconRegister)
     {
-        this.itemIcon = par1IconRegister.registerIcon("Metallurgy:machines/OreFinder");
+        this.itemIcon = par1IconRegister.registerIcon("metallurgycore:ore_finder");
     }
 
 }
