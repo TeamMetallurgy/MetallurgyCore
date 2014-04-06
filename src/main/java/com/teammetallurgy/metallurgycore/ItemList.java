@@ -14,13 +14,11 @@ public class ItemList
     public static void init()
     {
         String itemName = "metallurgyCore.oreFinder";
-        int defaultId = 2560;
 
         if (ConfigHandler.itemEnabled(itemName))
         {
-            int id = ConfigHandler.getItem(itemName, defaultId++);
 
-            ItemList.oreFinder = new ItemOreFinder(id).setUnlocalizedName(itemName);
+            ItemList.oreFinder = new ItemOreFinder().setUnlocalizedName(itemName);
 
             ItemList.registerItem(ItemList.oreFinder, itemName);
         }
