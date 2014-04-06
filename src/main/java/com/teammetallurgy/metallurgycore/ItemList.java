@@ -9,11 +9,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ItemList
 {
-    private static Item oreFinder;
+    public static Item oreFinder;
 
     public static void init()
     {
-        String itemName = "oreFinder";
+        String itemName = "metallurgyCore.oreFinder";
         int defaultId = 2560;
 
         if (ConfigHandler.itemEnabled(itemName))
