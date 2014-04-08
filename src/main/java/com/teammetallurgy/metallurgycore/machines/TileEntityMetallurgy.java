@@ -290,23 +290,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         {
             if (this.burnTime == 0 && this.canProcessItem())
             {
-                ItemStack fuelItemStack = getStackInSlot(getFuelSlot());
-                this.currentItemBurnTime = this.burnTime = TileEntityFurnace.getItemBurnTime(fuelItemStack);
-
-                if (this.burnTime > 0)
-                {
-                    changed = true;
-
-                    if (fuelItemStack != null)
-                    {
-                        --fuelItemStack.stackSize;
-
-                        if (fuelItemStack.stackSize == 0)
-                        {
-                            setInventorySlotContents(getFuelSlot(), fuelItemStack.getItem().getContainerItem(fuelItemStack));
-                        }
-                    }
-                }
+                changed = preProcessItem();
             }
 
             if (this.isBurning() && this.canProcessItem())
@@ -333,10 +317,63 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
 
         if (changed)
         {
-            this.markDirty();
+            postProcessItem();
         }
     }
 
+    /**
+     * Determines if a tile entity is burning
+     * Handles the consumption of fuel
+     * @return If the tile entity is now burning
+     */
+    protected boolean preProcessItem()
+    {
+        boolean changed = false;
+        ItemStack fuelItemStack = getStackInSlot(getFuelSlot());
+        this.currentItemBurnTime = this.burnTime = TileEntityFurnace.getItemBurnTime(fuelItemStack);
+
+        if (this.burnTime > 0)
+        {
+            if (fuelItemStack != null)
+            {
+                --fuelItemStack.stackSize;
+
+                if (fuelItemStack.stackSize == 0)
+                {
+                    setInventorySlotContents(getFuelSlot(), fuelItemStack.getItem().getContainerItem(fuelItemStack));
+                }
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    /**
+     * Handles the actual consumption of the item
+     * Will remove the item from the input and output to the
+     * corresponding slot
+     */
+    protected void processItem()
+    {
+        if (this.canProcessItem())
+        {
+            ItemStack[] inputStack = getStacksInSlots(getInputSlots());
+            ItemStack outputStack = getSmeltingResult(inputStack);
+
+            outputItem(outputStack);
+            useMaterialInSlots(getInputSlots());
+        }
+    }
+    
+    /**
+     * If anything needs to happen after the item has been worked,
+     * it should be done in this method
+     */
+    protected void postProcessItem()
+    {
+        this.markDirty();
+    }
+    
     protected void writeCustomNBT(NBTTagCompound compound)
     {
         this.writeItemListToNBT(compound, this.itemStacks, "Items");
@@ -438,18 +475,6 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         }
 
         return getSmeltingResult(stacks.toArray(new ItemStack[] {}));
-    }
-
-    protected void processItem()
-    {
-        if (this.canProcessItem())
-        {
-            ItemStack[] inputStack = getStacksInSlots(getInputSlots());
-            ItemStack outputStack = getSmeltingResult(inputStack);
-
-            outputItem(outputStack);
-            useMaterialInSlots(getInputSlots());
-        }
     }
 
     protected boolean hasMaterialAndRoom(ItemStack... itemStacks)
