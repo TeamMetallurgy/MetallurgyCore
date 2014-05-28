@@ -165,12 +165,16 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     @Override
     public ItemStack getStackInSlot(int i)
     {
+        if (i >= this.itemStacks.length) { return null; }
+
         return this.itemStacks[i];
     }
 
     @Override
     public ItemStack getStackInSlotOnClosing(int i)
     {
+        if (i >= this.itemStacks.length) { return null; }
+
         if (this.itemStacks[i] != null)
         {
             ItemStack itemstack = this.itemStacks[i];
@@ -212,7 +216,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         this.readCustomNBT(pkt.func_148857_g());
         this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
-    
+
     @Override
     public void openInventory()
     {
@@ -324,6 +328,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     /**
      * Determines if a tile entity is burning
      * Handles the consumption of fuel
+     * 
      * @return If the tile entity is now burning
      */
     protected boolean preProcessItem()
@@ -364,7 +369,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
             useMaterialInSlots(getInputSlots());
         }
     }
-    
+
     /**
      * If anything needs to happen after the item has been worked,
      * it should be done in this method
@@ -373,7 +378,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     {
         this.markDirty();
     }
-    
+
     protected void writeCustomNBT(NBTTagCompound compound)
     {
         this.writeItemListToNBT(compound, this.itemStacks, "Items");
