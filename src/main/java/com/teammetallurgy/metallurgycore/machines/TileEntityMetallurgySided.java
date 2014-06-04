@@ -8,16 +8,16 @@ import net.minecraft.nbt.NBTTagCompound;
 public abstract class TileEntityMetallurgySided extends TileEntityMetallurgy implements ISidedInventory
 {
 
-    private static int[] slots_top;
-    private static int[] slots_bottom;
-    private static int[] slots_sides;
+    private int[] slots_top;
+    private int[] slots_bottom;
+    private int[] slots_sides;
 
     public TileEntityMetallurgySided(int numberOfItemStacks, int[] slotsTop, int[] slotsSide, int[] slotsBottom)
     {
         this.itemStacks = new ItemStack[numberOfItemStacks];
-        TileEntityMetallurgySided.slots_top = slotsTop;
-        TileEntityMetallurgySided.slots_bottom = slotsBottom;
-        TileEntityMetallurgySided.slots_sides = slotsSide;
+        slots_top = slotsTop;
+        slots_bottom = slotsBottom;
+        slots_sides = slotsSide;
     }
 
     @Override
@@ -35,7 +35,15 @@ public abstract class TileEntityMetallurgySided extends TileEntityMetallurgy imp
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {
-        return side == 0 ? TileEntityMetallurgySided.slots_bottom : side == 1 ? TileEntityMetallurgySided.slots_top : TileEntityMetallurgySided.slots_sides;
+        switch (side)
+        {
+            case 0:
+                return slots_bottom;
+            case 1:
+                return slots_top;
+            default:
+                return slots_sides;
+        }
     }
 
     @Override
