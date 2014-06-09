@@ -1,3 +1,7 @@
 itemGroup.metallurgyCore.items=Metallurgy Core: Предметы
 
+chat.info.metallurgyCore.orefinder.area=В радиусе (%d, %d) до (%d, %d)
+chat.info.metallurgyCore.orefinder.found=Найдено %d %s
+chat.info.metallurgyCore.orefinder.radius=Радиус: %d чанка(ов)
+
 item.metallurgyCore.oreFinder.name=Рудоискатель
