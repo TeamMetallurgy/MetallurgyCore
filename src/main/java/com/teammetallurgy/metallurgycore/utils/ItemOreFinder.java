@@ -16,6 +16,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.oredict.OreDictionary;
@@ -107,12 +108,14 @@ public class ItemOreFinder extends Item
             final Set<String> names = oreCount.keySet();
             final String[] sort = names.toArray(new String[names.size()]);
             Arrays.sort(sort);
-            ChatUtils.sendChatToPlayer(player, "In Area (" + this.minX + ", " + this.minZ + ") to (" + this.maxX + ", " + this.maxZ + ")");            
-            
+            String unlocalizedAreaMessage = "chat.info.metallurgyCore.orefinder.area";
+            player.addChatMessage(new ChatComponentTranslation(unlocalizedAreaMessage, this.minX, this.minZ, this.maxX, this.maxZ));
+
             for (final String name : sort)
             {
                 final int amount = oreCount.get(name);
-                ChatUtils.sendChatToPlayer(player, "Found " + amount + " " + name);
+                String unlocalizedFoundMessage = "chat.info.metallurgyCore.orefinder.found";
+                player.addChatMessage(new ChatComponentTranslation(unlocalizedFoundMessage, amount, name));
             }
 
             return oreCount;
@@ -122,11 +125,10 @@ public class ItemOreFinder extends Item
 
     private ExecutorService exec = Executors.newCachedThreadPool();
 
-    
     @Deprecated
     public ItemOreFinder(int id)
     {
-         this();
+        this();
     }
 
     public ItemOreFinder()
@@ -135,7 +137,7 @@ public class ItemOreFinder extends Item
         this.maxStackSize = 1;
         this.setCreativeTab(MetallurgyCore.instance.creativeTabItems);
     }
-    
+
     public synchronized void getOresInArea(World world, EntityPlayer player, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) throws InterruptedException, ExecutionException
     {
         OreGeneratorm ore = new OreGeneratorm(world, player, minX, minY, minZ, maxX, maxY, maxZ);
@@ -165,7 +167,8 @@ public class ItemOreFinder extends Item
 
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             {
-                ChatUtils.sendChatToPlayer(player, "Radius: " + mode + " chunk" + (mode != 1 ? "s" : ""));
+                String unlocalizedMessage = "chat.info.metallurgyCore.orefinder.radius";
+                player.addChatMessage(new ChatComponentTranslation(unlocalizedMessage, mode));
             }
             return false;
         }

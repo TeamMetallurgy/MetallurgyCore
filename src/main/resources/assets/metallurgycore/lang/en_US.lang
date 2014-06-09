@@ -1,3 +1,7 @@
 itemGroup.metallurgyCore.items=Metallurgy Core: Items
 
+chat.info.metallurgyCore.orefinder.area=In Area (%d, %d) to (%d, %d)
+chat.info.metallurgyCore.orefinder.found=Found %d of %s
+chat.info.metallurgyCore.orefinder.radius=Radius: %d chunk(s)
+
 item.metallurgyCore.oreFinder.name=Ore Finder
