@@ -1,3 +1,7 @@
 itemGroup.metallurgyCore.items=Metallurgy Core: Oggetti
 
-item.metallurgyCore.oreFinder.name=Trovatore per Minerali
+item.metallurgyCore.oreFinder.name=Scova-Minerali
+
+chat.info.metallurgyCore.orefinder.area=Nell'area da (%d, %d) a (%d, %d)
+chat.info.metallurgyCore.orefinder.found=Trovati %d di %s
+chat.info.metallurgyCore.orefinder.radius=Raggio: %d chunk(s)
