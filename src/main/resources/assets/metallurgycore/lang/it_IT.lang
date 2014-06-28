@@ -1,6 +1,6 @@
-itemGroup.metallurgyCore.items=Metallurgy Core: Oggetti
+itemGroup.metallurgyCore.items=Metallurgy Core: oggetti
 
-item.metallurgyCore.oreFinder.name=Scova-Minerali
+item.metallurgyCore.oreFinder.name=Scova-minerali
 
 chat.info.metallurgyCore.orefinder.area=Nell'area da (%d, %d) a (%d, %d)
 chat.info.metallurgyCore.orefinder.found=Trovati %d di %s
