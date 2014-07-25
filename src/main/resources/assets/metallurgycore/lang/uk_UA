@@ -1,0 +1,7 @@
+itemGroup.metallurgyCore.items=Металургія: Основа
+
+chat.info.metallurgyCore.orefinder.area=У радіусі від %d, %d до %d, %d
+chat.info.metallurgyCore.orefinder.found=Знайдено %d %s
+chat.info.metallurgyCore.orefinder.radius=Радіус: %d Чанк(ів)
+
+item.metallurgyCore.oreFinder.name=Рудошукач
