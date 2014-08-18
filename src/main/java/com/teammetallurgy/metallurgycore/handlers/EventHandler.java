@@ -2,15 +2,15 @@ package com.teammetallurgy.metallurgycore.handlers;
 
 import java.util.ArrayList;
 
-import cpw.mods.fml.common.Mod;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.event.world.ChunkDataEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public abstract class EventHandler
 {
 
-    @Mod.EventHandler
+    @SubscribeEvent
     public void chunkLoad(ChunkDataEvent.Load event)
     {
         int dim = event.world.provider.dimensionId;
@@ -37,7 +37,7 @@ public abstract class EventHandler
         }
     }
 
-    @Mod.EventHandler
+    @SubscribeEvent
     public void chunkSave(ChunkDataEvent.Save event)
     {
         NBTTagCompound tagCompound = new NBTTagCompound();

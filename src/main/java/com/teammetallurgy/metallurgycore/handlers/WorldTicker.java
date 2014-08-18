@@ -6,16 +6,21 @@ import java.util.Random;
 
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.WorldEvent;
-import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public abstract class WorldTicker
 {
 
     public static HashMap<Integer, ArrayList<ChunkLoc>> chunksToGenerate = new HashMap<Integer, ArrayList<ChunkLoc>>();
-    
-    @Mod.EventHandler
+
+    @SubscribeEvent
     public void worldRetroGen(WorldEvent.Load event)
     {
+        if (!(event.world instanceof WorldServer))
+        {
+            return;
+        }
+
         WorldServer world = (WorldServer) event.world;
         int dim = world.provider.dimensionId;
         System.currentTimeMillis();
