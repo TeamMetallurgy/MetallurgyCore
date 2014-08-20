@@ -1,0 +1,7 @@
+itemGroup.metallurgyCore.items=冶金核心:物品
+
+chat.info.metallurgyCore.orefinder.area=在(%d, %d)至(%d, %d)的区域内
+chat.info.metallurgyCore.orefinder.found=发现%d of %s
+chat.info.metallurgyCore.orefinder.radius=半径: %d区块
+
+item.metallurgyCore.oreFinder.name=矿物探测器
