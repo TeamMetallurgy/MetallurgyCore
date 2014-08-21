@@ -21,9 +21,23 @@ public abstract class TileEntityMetallurgySided extends TileEntityMetallurgy imp
     }
 
     @Override
-    public boolean canExtractItem(int i, ItemStack itemstack, int j)
+    public boolean canExtractItem(int slot, ItemStack itemstack, int side)
     {
-        return i != 1 || itemstack.equals(Items.bucket);
+        if (itemstack.equals(Items.bucket))
+        {
+            return true;
+        }
+
+        int[] outputSlots = getOutputSlots();
+        for (int i = 0; i < outputSlots.length; i++)
+        {
+            if(outputSlots[i] == slot)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
