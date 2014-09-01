@@ -3,6 +3,7 @@ package com.teammetallurgy.metallurgycore.machines;
 import java.util.ArrayList;
 import java.util.Random;
 
+import vazkii.botania.api.item.IExoflameHeatable;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -16,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
 
-public abstract class TileEntityMetallurgy extends TileEntity implements IInventory
+public abstract class TileEntityMetallurgy extends TileEntity implements IInventory,IExoflameHeatable
 {
 
     protected static final int MAXCOOKTIME = 200;
@@ -516,5 +517,30 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         }
 
         return true;
+    }
+    
+
+    @Override
+    public boolean canSmelt()
+    {
+        return canProcessItem();
+    }
+    
+    @Override
+    public int getBurnTime()
+    {
+        return this.burnTime;
+    }
+    
+    @Override
+    public void boostBurnTime()
+    {
+        this.currentItemBurnTime = this.burnTime = 200;
+    }
+    
+    @Override
+    public void boostCookTime()
+    {
+      
     }
 }
