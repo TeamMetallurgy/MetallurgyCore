@@ -16,7 +16,9 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
+import cpw.mods.fml.common.Optional;
 
+@Optional.Interface(iface = "vazkii.botania.api.item.IExoflameHeatable", modid = "Botania")
 public abstract class TileEntityMetallurgy extends TileEntity implements IInventory,IExoflameHeatable
 {
 
@@ -519,25 +521,28 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         return true;
     }
     
-
+    @Optional.Method(modid = "Botania")
     @Override
     public boolean canSmelt()
     {
         return canProcessItem();
     }
     
+    @Optional.Method(modid = "Botania")
     @Override
     public int getBurnTime()
     {
         return this.burnTime;
     }
     
+    @Optional.Method(modid = "Botania")
     @Override
     public void boostBurnTime()
     {
         this.currentItemBurnTime = this.burnTime = 200;
     }
     
+    @Optional.Method(modid = "Botania")
     @Override
     public void boostCookTime()
     {
