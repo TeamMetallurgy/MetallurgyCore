@@ -28,7 +28,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     public int burnTime;
     public int currentItemBurnTime;
     public int cookTime;
-
+    
     private Random random = new Random();
 
     protected boolean canAcceptStackRange(int[] range, ItemStack itemstack)
@@ -232,7 +232,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
 
         this.burnTime = data.getShort("BurnTime");
         this.cookTime = data.getShort("CookTime");
-        this.currentItemBurnTime = TileEntityFurnace.getItemBurnTime(this.itemStacks[1]);
+        this.currentItemBurnTime = data.getShort("ItemBurnTime");
 
     }
 
@@ -387,6 +387,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         this.writeItemListToNBT(compound, this.itemStacks, "Items");
         compound.setShort("BurnTime", (short) this.burnTime);
         compound.setShort("CookTime", (short) this.cookTime);
+        compound.setShort("ItemBurnTime", (short) this.currentItemBurnTime);
 
     }
 
@@ -532,14 +533,19 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     @Override
     public int getBurnTime()
     {
-        return this.burnTime;
+        return this.burnTime <= 1 ? 0 : this.burnTime - 1;
     }
     
     @Optional.Method(modid = "Botania")
     @Override
     public void boostBurnTime()
     {
-        this.currentItemBurnTime = this.burnTime = 200;
+        if (!this.worldObj.isRemote)
+        {
+            this.burnTime = 200;
+            this.currentItemBurnTime = 199;
+            markDirty();
+        }
     }
     
     @Optional.Method(modid = "Botania")
