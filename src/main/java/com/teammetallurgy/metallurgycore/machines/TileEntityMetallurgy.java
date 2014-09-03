@@ -3,6 +3,7 @@ package com.teammetallurgy.metallurgycore.machines;
 import java.util.ArrayList;
 import java.util.Random;
 
+import vazkii.botania.api.item.IExoflameHeatable;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -15,8 +16,10 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
+import cpw.mods.fml.common.Optional;
 
-public abstract class TileEntityMetallurgy extends TileEntity implements IInventory
+@Optional.Interface(iface = "vazkii.botania.api.item.IExoflameHeatable", modid = "Botania")
+public abstract class TileEntityMetallurgy extends TileEntity implements IInventory,IExoflameHeatable
 {
 
     protected static final int MAXCOOKTIME = 200;
@@ -25,7 +28,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     public int burnTime;
     public int currentItemBurnTime;
     public int cookTime;
-
+    
     private Random random = new Random();
 
     protected boolean canAcceptStackRange(int[] range, ItemStack itemstack)
@@ -229,7 +232,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
 
         this.burnTime = data.getShort("BurnTime");
         this.cookTime = data.getShort("CookTime");
-        this.currentItemBurnTime = TileEntityFurnace.getItemBurnTime(this.itemStacks[1]);
+        this.currentItemBurnTime = data.getShort("ItemBurnTime");
 
     }
 
@@ -384,6 +387,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         this.writeItemListToNBT(compound, this.itemStacks, "Items");
         compound.setShort("BurnTime", (short) this.burnTime);
         compound.setShort("CookTime", (short) this.cookTime);
+        compound.setShort("ItemBurnTime", (short) this.currentItemBurnTime);
 
     }
 
@@ -516,5 +520,38 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         }
 
         return true;
+    }
+    
+    @Optional.Method(modid = "Botania")
+    @Override
+    public boolean canSmelt()
+    {
+        return canProcessItem();
+    }
+    
+    @Optional.Method(modid = "Botania")
+    @Override
+    public int getBurnTime()
+    {
+        return this.burnTime <= 1 ? 0 : this.burnTime - 1;
+    }
+    
+    @Optional.Method(modid = "Botania")
+    @Override
+    public void boostBurnTime()
+    {
+        if (!this.worldObj.isRemote)
+        {
+            this.burnTime = 200;
+            this.currentItemBurnTime = 199;
+            markDirty();
+        }
+    }
+    
+    @Optional.Method(modid = "Botania")
+    @Override
+    public void boostCookTime()
+    {
+      
     }
 }
