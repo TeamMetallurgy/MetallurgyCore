@@ -1,0 +1,7 @@
+itemGroup.metallurgyCore.items=메탈러지 코어[Metallurgy Core: Items]
+
+chat.info.metallurgyCore.orefinder.area=범위 : (%d, %d) 에서 (%d, %d)
+chat.info.metallurgyCore.orefinder.found=%d에서 %s를 찾았습니다
+chat.info.metallurgyCore.orefinder.radius=반지름: %d 청크
+
+item.metallurgyCore.oreFinder.name=광물 탐지기
