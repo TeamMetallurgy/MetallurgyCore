@@ -7,11 +7,9 @@
   "logoFile": "",
   "version": "4.0.4",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "http://minecraft.curseforge.com/mc-mods/78640-metallurgy-core",
   "updateUrl": "",
-  "authorList": [
-    "Team Metallurgy"
-  ],
+  "authorList": [ "Team Metallurgy" ],
   "screenshots": [
   ],
   "parent":"",
