@@ -41,7 +41,7 @@ public class FluidWidget
 
         if (liquidIcon == null) { return; }
 
-        final float scale = Math.min(fluidStack.amount, this.tank.getCapacity()) / (float) this.tank.getCapacity();
+        double scale = (double)fluidStack.amount / this.tank.getCapacity();
 
         GUIMetallurgyMachine.bindTexture(FluidRender.getFluidSheet(fluidStack));
 
@@ -55,8 +55,8 @@ public class FluidWidget
 
         GUIMetallurgyMachine.bindTexture(texture);
 
-        gui.drawTexturedModalRect(guiX + this.x, guiY + this.y - 1, this.x, this.y - 1, this.w, this.h - (int) Math.floor(this.h * scale) + 1);
-        gui.drawTexturedModalRect(guiX + this.x, guiY + this.y, this.u, this.v, this.w, this.h);
+        gui.drawTexturedModalRect(guiX + this.x, guiY + this.y - 1, this.x, this.y - 1, this.w, this.h - (int) Math.floor(this.h * scale));
+        gui.drawTexturedModalRect(guiX + this.x, guiY + this.y + this.h - 1, 8, this.y + this.h -1, this.w, 20);
 
     }
 
