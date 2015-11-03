@@ -29,6 +29,8 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     public int currentItemBurnTime;
     public int cookTime;
 
+    private boolean running;
+
     protected boolean canAcceptStackRange(int[] range, ItemStack itemstack)
     {
         Boolean retVal = false;
@@ -193,6 +195,11 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         return this.burnTime > 0;
     }
 
+    public boolean isRunning()
+    {
+        return this.running;
+    }
+
     @Override
     public boolean hasCustomInventoryName()
     {
@@ -231,6 +238,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         this.burnTime = data.getShort("BurnTime");
         this.cookTime = data.getShort("CookTime");
         this.currentItemBurnTime = data.getShort("ItemBurnTime");
+        this.running = data.getBoolean("Running");
 
     }
 
@@ -255,6 +263,29 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
                 stacks[b0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }
         }
+    }
+
+    @Override
+    public boolean receiveClientEvent(int eventId, int value)
+    {
+        if (eventId == 1)
+        {
+            if (worldObj != null)
+            {
+                if (value == 1)
+                {
+                    running = true;
+                }
+                else
+                {
+                    running = false;
+                }
+
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                return true;
+            }
+        }
+        return super.receiveClientEvent(eventId, eventId);
     }
 
     @Override
@@ -316,6 +347,13 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
 
             if (burning != this.burnTime > 0)
             {
+                running = this.burnTime > 0;
+                int runningValue = 0;
+                if (running)
+                {
+                    runningValue = 1;
+                }
+                this.worldObj.addBlockEvent(xCoord, yCoord, zCoord, this.getBlockType(), 1, runningValue);
                 changed = true;
             }
         }
@@ -386,6 +424,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         compound.setShort("BurnTime", (short) this.burnTime);
         compound.setShort("CookTime", (short) this.cookTime);
         compound.setShort("ItemBurnTime", (short) this.currentItemBurnTime);
+        compound.setBoolean("Running", this.running);
 
     }
 

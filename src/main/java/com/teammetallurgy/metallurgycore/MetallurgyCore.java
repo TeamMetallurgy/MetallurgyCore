@@ -1,6 +1,7 @@
 package com.teammetallurgy.metallurgycore;
 
 import com.teammetallurgy.metallurgycore.handlers.ConfigHandler;
+import com.teammetallurgy.metallurgycore.handlers.LogHandler;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -22,6 +23,7 @@ public class MetallurgyCore
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        LogHandler.setLog(event.getModLog());
         ConfigHandler.setFile(event.getSuggestedConfigurationFile());
         ItemList.init();
 
