@@ -1,5 +1,7 @@
 package com.teammetallurgy.metallurgycore.machines;
 
+import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -9,6 +11,7 @@ import net.minecraft.world.World;
 
 public abstract class BlockMetallurgyCore extends BlockContainer
 {
+    private Random random = new Random();
 
     @Deprecated
     public BlockMetallurgyCore(int id)
@@ -27,7 +30,7 @@ public abstract class BlockMetallurgyCore extends BlockContainer
         TileEntityMetallurgy blockTileEntity = (TileEntityMetallurgy) world.getTileEntity(x, y, z);
         if (blockTileEntity != null)
         {
-            blockTileEntity.dropContents();
+            blockTileEntity.dropContents(random);
         }
         world.removeTileEntity(x, y, z);
     }

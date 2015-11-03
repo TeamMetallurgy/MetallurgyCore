@@ -28,8 +28,6 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
     public int burnTime;
     public int currentItemBurnTime;
     public int cookTime;
-    
-    private Random random = new Random();
 
     protected boolean canAcceptStackRange(int[] range, ItemStack itemstack)
     {
@@ -90,7 +88,7 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         }
     }
 
-    public void dropContents()
+    public void dropContents(Random random)
     {
 
         World world = this.worldObj;
@@ -98,13 +96,13 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
         {
             if (stack != null)
             {
-                float f = this.random.nextFloat() * 0.8F + 0.1F;
-                float f1 = this.random.nextFloat() * 0.8F + 0.1F;
+                float f = random.nextFloat() * 0.8F + 0.1F;
+                float f1 = random.nextFloat() * 0.8F + 0.1F;
                 EntityItem entityitem;
 
-                for (float f2 = this.random.nextFloat() * 0.8F + 0.1F; stack.stackSize > 0; world.spawnEntityInWorld(entityitem))
+                for (float f2 = random.nextFloat() * 0.8F + 0.1F; stack.stackSize > 0; world.spawnEntityInWorld(entityitem))
                 {
-                    int k1 = this.random.nextInt(21) + 10;
+                    int k1 = random.nextInt(21) + 10;
 
                     if (k1 > stack.stackSize)
                     {
@@ -114,9 +112,9 @@ public abstract class TileEntityMetallurgy extends TileEntity implements IInvent
                     stack.stackSize -= k1;
                     entityitem = new EntityItem(world, this.xCoord + f, this.yCoord + f1, this.zCoord + f2, new ItemStack(stack.getItem(), k1, stack.getItemDamage()));
                     float f3 = 0.05F;
-                    entityitem.motionX = (float) this.random.nextGaussian() * f3;
-                    entityitem.motionY = (float) this.random.nextGaussian() * f3 + 0.2F;
-                    entityitem.motionZ = (float) this.random.nextGaussian() * f3;
+                    entityitem.motionX = (float) random.nextGaussian() * f3;
+                    entityitem.motionY = (float) random.nextGaussian() * f3 + 0.2F;
+                    entityitem.motionZ = (float) random.nextGaussian() * f3;
 
                     if (stack.hasTagCompound())
                     {
